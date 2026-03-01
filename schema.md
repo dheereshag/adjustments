@@ -13,7 +13,7 @@ Stores faculty/teacher information.
 
 | Column | Type | Constraints | Notes |
 |---|---|---|---|
-| `id` | `VARCHAR(5)` | PRIMARY KEY | Employee code, e.g. `19842` |
+| `id` | `INT` | PRIMARY KEY | Employee code, e.g. `19842` |
 | `name` | `VARCHAR(100)` | NOT NULL | Full name |
 | `created_at` | `TIMESTAMPTZ` | DEFAULT NOW() | |
 | `updated_at` | `TIMESTAMPTZ` | DEFAULT NOW() | |
@@ -25,7 +25,7 @@ The 8 fixed daily time slots. Seeded once, never changes.
 
 | Column | Type | Constraints | Notes |
 |---|---|---|---|
-| `slot_number` | `INT` | PRIMARY KEY | 1–8 |
+| `slot_number` | `SMALLINT` | PRIMARY KEY | 1–8 |
 | `start_time` | `TIME` | NOT NULL | e.g. `09:30` |
 | `end_time` | `TIME` | NOT NULL | e.g. `10:20` |
 
@@ -54,10 +54,10 @@ The regular (fixed) timetable for each faculty — what slots they are already o
 | Column | Type | Constraints | Notes |
 |---|---|---|---|
 | `id` | `SERIAL` | PRIMARY KEY | |
-| `faculty_id` | `VARCHAR(5)` | FK → `faculties.id`, NOT NULL | |
+| `faculty_id` | `INT` | FK → `faculties.id`, NOT NULL | |
 | `day` | `day_enum` | NOT NULL | |
-| `slot_id` | `INT` | FK → `slots.slot_number`, NOT NULL | First slot of a paired slot |
-| `slot_id_2` | `INT` | FK → `slots.slot_number`, NULLABLE | Second slot if it's a double (e.g. slots 1 & 2) |
+| `slot_id` | `SMALLINT` | FK → `slots.slot_number`, NOT NULL | First slot of a paired slot |
+| `slot_id_2` | `SMALLINT` | FK → `slots.slot_number`, NULLABLE | Second slot if it's a double (e.g. slots 1 & 2) |
 | `class_name` | `VARCHAR(50)` | | e.g. `23AML-3` |
 | `block_name` | `block_enum` | NOT NULL | |
 | `room_number` | `INT` | | e.g. `411` |
@@ -79,10 +79,10 @@ Tracks who requested which free slot of a faculty, and for what purpose.
 | Column | Type | Constraints | Notes |
 |---|---|---|---|
 | `id` | `SERIAL` | PRIMARY KEY | |
-| `requested_by_faculty_id` | `VARCHAR(5)` | FK → `faculties.id`, NOT NULL | Who is requesting |
-| `target_faculty_id` | `VARCHAR(5)` | FK → `faculties.id`, NOT NULL | Whose free slot is being requested |
+| `requested_by_faculty_id` | `INT` | FK → `faculties.id`, NOT NULL | Who is requesting |
+| `target_faculty_id` | `INT` | FK → `faculties.id`, NOT NULL | Whose free slot is being requested |
 | `day` | `day_enum` | NOT NULL | |
-| `slot_id` | `INT` | FK → `slots.slot_number`, NOT NULL | The free slot being requested |
+| `slot_id` | `SMALLINT` | FK → `slots.slot_number`, NOT NULL | The free slot being requested |
 | `reason` | `TEXT` | | Optional reason/note |
 | `remarks` | `TEXT` | NULLABLE | Admin/resolver remarks |
 | `status` | `request_status_enum` | DEFAULT `pending` | |
