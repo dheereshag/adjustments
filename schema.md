@@ -88,6 +88,8 @@ Tracks who requested which free slot of a faculty, and for what purpose.
 | `requested_at` | `TIMESTAMPTZ` | DEFAULT NOW() | |
 | `resolved_at` | `TIMESTAMPTZ` | NULLABLE | When approved/rejected |
 
+**Unique constraint:** `(requested_by_faculty_id, target_faculty_id, day, slot_id)` — a faculty cannot submit duplicate requests for the same target faculty's slot on the same day.
+
 ---
 
 ## Relationships
