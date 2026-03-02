@@ -7,19 +7,14 @@ type Faculty = {
   name: string;
 };
 
-const fallbackFaculties: Faculty[] = [
-  { id: 19078, name: "Anchita Panjeta" },
-  { id: 19842, name: "Dheeresh Agarwal" },
-];
-
 async function getFaculties() {
   const { data, error } = await supabase
     .from("faculties")
     .select("id, name")
     .order("name");
 
-  if (error || !data) {
-    return fallbackFaculties;
+  if (error) {
+    throw new Error(`Failed to fetch faculties: ${error.message}`);
   }
 
   return data as Faculty[];
