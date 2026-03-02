@@ -56,8 +56,7 @@ The regular (fixed) timetable for each faculty — what slots they are already o
 | `id` | `SERIAL` | PRIMARY KEY | |
 | `faculty_id` | `INT` | FK → `faculties.id`, NOT NULL | |
 | `day` | `day_enum` | NOT NULL | |
-| `slot_id` | `SMALLINT` | FK → `slots.slot_number`, NOT NULL | First slot of a paired slot |
-| `slot_id_2` | `SMALLINT` | FK → `slots.slot_number`, NULLABLE | Second slot if it's a double (e.g. slots 1 & 2) |
+| `slot_id` | `SMALLINT` | FK → `slots.slot_number`, NOT NULL | The occupied slot (one row per slot) |
 | `class_name` | `VARCHAR(50)` | | e.g. `23AML-3` |
 | `block_name` | `block_enum` | NOT NULL | |
 | `room_number` | `SMALLINT` | | e.g. `411` |
@@ -98,7 +97,6 @@ faculties ──< schedules              (faculty_id → faculties.id)
 faculties ──< adjustment_requests    (requested_by_faculty_id → faculties.id)
 faculties ──< adjustment_requests    (target_faculty_id → faculties.id)
 slots     ──< schedules              (slot_id → slots.slot_number)
-slots     ──< schedules              (slot_id_2 → slots.slot_number)
 slots     ──< adjustment_requests    (slot_id → slots.slot_number)
 ```
 
@@ -106,7 +104,7 @@ slots     ──< adjustment_requests    (slot_id → slots.slot_number)
 
 ## Notes
 
-- Double slots (e.g. "1 & 2") are handled by `slot_id` + `slot_id_2` in `schedules`.
+- Each row in `schedules` represents one occupied slot. A double-slot class (e.g. slots 3 & 4) is stored as two separate rows with the same class/course details.
 - The `slots` table is static — seed it once from `slots.js`.
 - Faculty timetables (the `schedules` table) can be bulk-imported from per-faculty CSVs like `anchita.csv`.
 - All enums (`day_enum`, `block_enum`, `group_enum`, `request_status_enum`) should be defined at the DB level before creating tables.
