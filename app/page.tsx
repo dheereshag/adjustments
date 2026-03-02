@@ -9,7 +9,7 @@ async function getFaculties() {
     .order("name");
 
   if (error) {
-    throw new Error(`Failed to fetch faculties: ${error.message}`);
+    throw new Error("Failed to fetch faculties: " + error.message);
   }
 
   return data as Faculty[];
