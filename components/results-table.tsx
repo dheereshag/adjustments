@@ -1,6 +1,11 @@
-import type { FacultyFreeSlots } from "@/lib/types";
+import type { Faculty, FacultyFreeSlots } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Pill } from "@/components/kibo-ui/pill";
 import { RequestDialog } from "./request-dialog";
+
+function formatTime(t: string) {
+  return t.slice(0, 5);
+}
 
 interface ResultsTableProps {
   results: FacultyFreeSlots[];
@@ -8,6 +13,8 @@ interface ResultsTableProps {
   day: string;
   requestingFacultyId: number;
   onRequestSent?: () => void;
+  approvedMap: Map<string, number>;
+  faculties: Faculty[];
 }
 
 export function ResultsTableSkeleton() {
@@ -40,7 +47,10 @@ export function ResultsTable({
   day,
   requestingFacultyId,
   onRequestSent,
+  approvedMap,
+  faculties,
 }: ResultsTableProps) {
+  const facultyMap = new Map(faculties.map((f) => [f.id, f]));
   if (results.length === 0) {
     return (
       <p className="text-sm text-zinc-400">
@@ -88,16 +98,42 @@ export function ResultsTable({
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex flex-wrap gap-1.5">
-                    {freeSlots.map((slot) => (
-                      <RequestDialog
-                        key={slot.slot_number}
-                        requestingFacultyId={requestingFacultyId}
-                        targetFaculty={faculty}
-                        slot={slot}
-                        day={day}
-                        onRequestSent={onRequestSent}
-                      />
-                    ))}
+                    {freeSlots.map((slot) => {
+                      const takenBy = approvedMap.get(
+                        `${faculty.id}-${slot.slot_number}`,
+                      );
+                      if (takenBy !== undefined) {
+                        const takenName =
+                          facultyMap.get(takenBy)?.name ?? `E${takenBy}`;
+                        return (
+                          <Pill
+                            key={slot.slot_number}
+                            className="cursor-not-allowed bg-zinc-100 text-zinc-400 ring-1 ring-inset ring-zinc-200 dark:bg-zinc-900 dark:text-zinc-600 dark:ring-zinc-700"
+                          >
+                            <span className="font-medium">
+                              Slot {slot.slot_number}
+                            </span>
+                            <span>
+                              {formatTime(slot.start_time)}–
+                              {formatTime(slot.end_time)}
+                            </span>
+                            <span className="text-zinc-400 dark:text-zinc-600">
+                              · {takenName}
+                            </span>
+                          </Pill>
+                        );
+                      }
+                      return (
+                        <RequestDialog
+                          key={slot.slot_number}
+                          requestingFacultyId={requestingFacultyId}
+                          targetFaculty={faculty}
+                          slot={slot}
+                          day={day}
+                          onRequestSent={onRequestSent}
+                        />
+                      );
+                    })}
                   </div>
                 </td>
               </tr>

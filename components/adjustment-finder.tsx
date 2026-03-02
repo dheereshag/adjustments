@@ -30,6 +30,9 @@ export default function AdjustmentFinder({
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [busySlots, setBusySlots] = useState<Slot[]>([]);
   const [results, setResults] = useState<FacultyFreeSlots[] | null>(null);
+  const [approvedMap, setApprovedMap] = useState<Map<string, number>>(
+    new Map(),
+  );
   const [myRequests, setMyRequests] = useState<AdjustmentRequest[] | null>(
     null,
   );
@@ -81,6 +84,7 @@ export default function AdjustmentFinder({
     setLoading(true);
     setResults(null);
     setBusySlots([]);
+    setApprovedMap(new Map());
 
     const { data: mySchedules, error: myErr } = await supabase
       .from("schedules")
@@ -152,6 +156,22 @@ export default function AdjustmentFinder({
     }
 
     out.sort((a, b) => b.freeSlots.length - a.freeSlots.length);
+
+    const { data: approvedReqs } = await supabase
+      .from("adjustment_requests")
+      .select("target_faculty_id, slot_id, requested_by_faculty_id")
+      .eq("day", day)
+      .eq("status", "approved");
+
+    const newApprovedMap = new Map<string, number>();
+    for (const r of approvedReqs ?? []) {
+      newApprovedMap.set(
+        `${r.target_faculty_id}-${r.slot_id}`,
+        r.requested_by_faculty_id,
+      );
+    }
+    setApprovedMap(newApprovedMap);
+
     setResults(out);
     setLoading(false);
   }
@@ -208,6 +228,8 @@ export default function AdjustmentFinder({
               day={selectedDay}
               requestingFacultyId={parseInt(selectedFacultyId)}
               onRequestSent={() => fetchRequests(parseInt(selectedFacultyId))}
+              approvedMap={approvedMap}
+              faculties={faculties}
             />
           )}
         </div>

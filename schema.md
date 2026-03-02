@@ -90,6 +90,8 @@ Tracks who requested which free slot of a faculty, and for what purpose.
 
 **Unique constraint:** `(requested_by_faculty_id, target_faculty_id, day, slot_id)` — a faculty cannot submit duplicate requests for the same target faculty's slot on the same day.
 
+**Trigger — `trg_reject_conflicting_requests`:** When a request's `status` is set to `approved`, all other `pending` requests targeting the same `(target_faculty_id, day, slot_id)` are automatically set to `rejected` with a remark: _"Slot already taken — another request for this slot was approved."_
+
 ---
 
 ## Relationships
