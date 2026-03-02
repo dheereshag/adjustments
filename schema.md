@@ -73,7 +73,7 @@ The regular (fixed) timetable for each faculty — what slots they are already o
 Tracks who requested which free slot of a faculty, and for what purpose.
 
 **Enums used:**
-- `day_enum`: `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`
+- `day_enum`: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`
 - `request_status_enum`: `pending`, `approved`, `rejected`
 
 | Column | Type | Constraints | Notes |
