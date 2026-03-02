@@ -19,7 +19,6 @@ async function getFaculties() {
     .order("name");
 
   if (error || !data) {
-    console.error("Error fetching faculties:", error);
     return fallbackFaculties;
   }
 
