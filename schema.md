@@ -47,7 +47,7 @@ id=8  15:35–16:25
 The regular (fixed) timetable for each faculty — what slots they are already occupied in.
 
 **Enums used:**
-- `day_enum`: `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`
+- `day_enum`: `Mon`, `Tue`, `Wed`, `Thu`, `Fri`
 - `block_enum`: `D2`, `D3`
 - `group_enum`: `A`, `B`
 
