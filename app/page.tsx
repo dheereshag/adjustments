@@ -7,7 +7,6 @@ async function getFaculties() {
     .from("faculties")
     .select("id, name")
     .order("name");
-
   if (error) {
     return [];
   }
